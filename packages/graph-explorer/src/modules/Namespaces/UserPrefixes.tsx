@@ -1,0 +1,295 @@
+import { useAtomCallback } from "jotai/utils";
+import { useCallback, useState } from "react";
+import { Virtuoso } from "react-virtuoso";
+
+import type { IriNamespace, RdfPrefix } from "@/utils/rdf";
+
+import {
+  AddIcon,
+  Button,
+  DeleteIcon,
+  InputField,
+  ListRow,
+  ListRowContent,
+  ListRowSubtitle,
+  ListRowTitle,
+  NamespaceIcon,
+  PanelEmptyState,
+  PanelFooter,
+  SaveIcon,
+  SearchBar,
+  useSearchItems,
+} from "@/components";
+import {
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/Dialog";
+import {
+  activeConfigurationAtom,
+  type PrefixTypeConfig,
+  schemaAtom,
+  useConfiguration,
+} from "@/core";
+import { usePrefixes } from "@/core/StateProvider/schema";
+
+type PrefixForm = {
+  prefix: string;
+  uri: string;
+};
+
+const UserPrefixes = () => {
+  const items = useCustomPrefixes();
+  const [opened, setOpened] = useState(false);
+
+  return (
+    <div className="flex h-full grow flex-col">
+      {items.length > 0 ? (
+        <SearchablePrefixes items={items} onOpen={() => setOpened(true)} />
+      ) : (
+        <EmptyState onCreate={() => setOpened(true)} />
+      )}
+      <EditPrefixModal opened={opened} onClose={() => setOpened(false)} />
+    </div>
+  );
+};
+
+function useCustomPrefixes() {
+  const prefixes = usePrefixes();
+  return prefixes.userPrefixes;
+}
+
+function SearchablePrefixes({
+  items,
+  onOpen,
+}: {
+  items: PrefixTypeConfig[];
+  onOpen: () => void;
+}) {
+  const { filteredItems, search, setSearch } = useSearchItems(
+    items,
+    config => `${config.prefix} ${config.uri}`,
+  );
+
+  return (
+    <div className="flex h-full grow flex-col">
+      <div className="w-full shrink-0 px-3 py-2">
+        <SearchBar
+          search={search}
+          searchPlaceholder="Search for Namespaces or URIs"
+          onSearch={setSearch}
+        />
+      </div>
+      <SearchResults filteredItems={filteredItems} className="grow" />
+      <PanelFooter className="flex shrink-0 flex-row justify-end">
+        <Button variant="primary" onClick={onOpen}>
+          <AddIcon />
+          Create
+        </Button>
+      </PanelFooter>
+    </div>
+  );
+}
+
+function SearchResults({
+  filteredItems,
+  className,
+}: {
+  className?: string;
+  filteredItems: PrefixTypeConfig[];
+}) {
+  return (
+    <Virtuoso
+      className={className}
+      components={{
+        EmptyPlaceholder: NoSearchResults,
+      }}
+      data={filteredItems}
+      itemContent={(_index, prefix) => <Row prefix={prefix} />}
+    />
+  );
+}
+
+function Row({ prefix }: { prefix: PrefixTypeConfig }) {
+  const onDeletePrefix = useDeletePrefixCallback(prefix.prefix);
+  return (
+    <div className="px-3 py-1.5">
+      <ListRow className="min-h-12">
+        <NamespaceIcon className="text-primary-main size-5 shrink-0" />
+        <ListRowContent>
+          <ListRowTitle>{prefix.prefix}</ListRowTitle>
+          <ListRowSubtitle className="break-all">{prefix.uri}</ListRowSubtitle>
+        </ListRowContent>
+        <Button
+          variant="danger-ghost"
+          size="icon"
+          tooltip="Delete custom prefix"
+          onClick={onDeletePrefix}
+        >
+          <DeleteIcon />
+        </Button>
+      </ListRow>
+    </div>
+  );
+}
+
+function NoSearchResults() {
+  return (
+    <PanelEmptyState
+      className="p-6"
+      title="No Namespaces Found"
+      subtitle="No custom namespaces found matching your search"
+      icon={<NamespaceIcon />}
+    />
+  );
+}
+
+function EmptyState({ onCreate }: { onCreate: () => void }) {
+  return (
+    <PanelEmptyState
+      className="p-6"
+      title="No Namespaces"
+      subtitle="No custom namespaces stored"
+      icon={<NamespaceIcon />}
+      actionLabel="Create a new namespace"
+      onAction={onCreate}
+    />
+  );
+}
+
+function useDeletePrefixCallback(prefix: string) {
+  return useAtomCallback(
+    useCallback(
+      (get, set) => {
+        const activeConfigId = get(activeConfigurationAtom);
+
+        if (!activeConfigId) {
+          return;
+        }
+
+        set(schemaAtom, prevSchemas => {
+          const updatedSchemas = new Map(prevSchemas);
+          const activeSchema = updatedSchemas.get(activeConfigId);
+
+          updatedSchemas.set(activeConfigId, {
+            ...activeSchema,
+            vertices: activeSchema?.vertices || [],
+            edges: activeSchema?.edges || [],
+            prefixes: (activeSchema?.prefixes || []).filter(
+              prefixConfig => prefixConfig.prefix !== prefix,
+            ),
+          });
+
+          return updatedSchemas;
+        });
+      },
+      [prefix],
+    ),
+  );
+}
+
+function EditPrefixModal({
+  opened,
+  onClose,
+}: {
+  opened: boolean;
+  onClose: () => void;
+}) {
+  const config = useConfiguration();
+
+  const [hasError, setError] = useState(false);
+  const [form, setForm] = useState<PrefixForm>({
+    prefix: "",
+    uri: "",
+  });
+
+  const onFormChange = (attribute: "prefix" | "uri") => (value: string) => {
+    setForm(prev => ({
+      ...prev,
+      [attribute]: value,
+    }));
+  };
+
+  const configId = config?.id;
+  const onSave = useAtomCallback(
+    useCallback(
+      (_get, set, prefix: string, uri: string) => {
+        if (!configId) {
+          return;
+        }
+
+        set(schemaAtom, prevSchemas => {
+          const updatedSchemas = new Map(prevSchemas);
+          const activeSchema = updatedSchemas.get(configId);
+
+          updatedSchemas.set(configId, {
+            ...activeSchema,
+            vertices: activeSchema?.vertices || [],
+            edges: activeSchema?.edges || [],
+            prefixes: [
+              ...(activeSchema?.prefixes || []),
+              { prefix: prefix as RdfPrefix, uri: uri as IriNamespace },
+            ],
+          });
+
+          return updatedSchemas;
+        });
+      },
+      [configId],
+    ),
+  );
+
+  const onSubmit = () => {
+    if (!form.prefix || !form.uri) {
+      setError(true);
+      return;
+    }
+
+    onSave(form.prefix, form.uri);
+    setForm({ prefix: "", uri: "" });
+    setError(false);
+    onClose();
+  };
+
+  return (
+    <Dialog open={opened} onOpenChange={onClose}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Create Namespace</DialogTitle>
+          <DialogDescription>Create a new SPARQL namespace</DialogDescription>
+        </DialogHeader>
+        <DialogBody>
+          <InputField
+            label="Namespace"
+            value={form.prefix}
+            onChange={onFormChange("prefix")}
+            placeholder="Namespace"
+            validationState={hasError && !form.prefix ? "invalid" : "valid"}
+            errorMessage="Namespace is required"
+          />
+          <InputField
+            className="input-uri"
+            label="URI"
+            value={form.uri}
+            onChange={onFormChange("uri")}
+            placeholder="URI"
+            validationState={hasError && !form.uri ? "invalid" : "valid"}
+            errorMessage="URI is required"
+          />
+        </DialogBody>
+        <DialogFooter>
+          <Button variant="primary" onClick={onSubmit}>
+            <SaveIcon />
+            Save
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+export default UserPrefixes;

@@ -1,0 +1,76 @@
+import { useIsFetching, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useAtomValue } from "jotai";
+
+import { edgeConnectionsQuery, schemaSyncQuery } from "@/connector";
+import {
+  activeConfigurationAtom,
+  maybeActiveSchemaAtom,
+  useConfiguration,
+} from "@/core";
+import { logger } from "@/utils";
+
+/** Returns true if any schema sync query is running. Will not trigger the query to run. */
+export function useIsSyncing() {
+  return useIsFetching({ queryKey: ["schema"] }) > 0;
+}
+
+/** Returns a function that cancels all in-flight schema sync queries. */
+export function useCancelSchemaSync() {
+  const queryClient = useQueryClient();
+  return () => {
+    logger.log("Cancelling schema sync");
+    return queryClient.cancelQueries({ queryKey: ["schema"] });
+  };
+}
+
+/**
+ * Subscribes to the schema discovery and edge connection discovery queries.
+ *
+ * Both queries use `staleTime: Infinity` and `initialData` from the Jotai
+ * store. This means:
+ * - If cached data exists in localforage, it seeds the query cache and no
+ *   fetch occurs.
+ * - If no cached data exists, TanStack Query fetches automatically.
+ * - Manual refetch is available via `refreshSchema()`.
+ * - On refetch failure, TanStack Query preserves the previous successful data.
+ */
+export function useSchemaSync() {
+  const config = useConfiguration();
+  // Read the atom directly instead of useMaybeActiveSchema() because that hook
+  // wraps the value in useDeferredValue, which delays the update by one render.
+  // The schema and connectionId must update in the same render so the query
+  // options stay consistent when switching connections.
+  const activeSchema = useAtomValue(maybeActiveSchemaAtom);
+  const connectionId = useAtomValue(activeConfigurationAtom);
+
+  const schemaDiscoveryQuery = useQuery(
+    schemaSyncQuery({
+      connectionId,
+      activeSchema,
+      hasConnection: config != null,
+    }),
+  );
+  const edgeDiscoveryQuery = useQuery(
+    edgeConnectionsQuery(schemaDiscoveryQuery.data),
+  );
+
+  const isFetching =
+    schemaDiscoveryQuery.isFetching || edgeDiscoveryQuery.isFetching;
+
+  const refreshSchema = async () => {
+    logger.log("Refreshing schema");
+    await schemaDiscoveryQuery.refetch();
+    await edgeDiscoveryQuery.refetch();
+  };
+
+  return {
+    /** Query state for schema discovery */
+    schemaDiscoveryQuery,
+    /** Query state for edge connection discovery */
+    edgeDiscoveryQuery,
+    /** Refetches both schema and edge connections */
+    refreshSchema,
+    /** True if either query is fetching */
+    isFetching,
+  };
+}

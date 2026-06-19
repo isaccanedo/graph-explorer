@@ -1,0 +1,58 @@
+{
+  "node": "Resource",
+  "nodes": "Resources",
+  "edge": "Predicate",
+  "edges": "Predicates",
+  "node-id": "Resource Id",
+  "node-type": "Class",
+  "node-types": "Classes",
+  "edge-id": "Predicate Id",
+  "edge-type": "Predicate",
+  "edge-types": "Predicates",
+  "source-id": "Source Id",
+  "source-type": "Source Class",
+  "target-id": "Target Id",
+  "target-type": "Target Class",
+  "property": "Datatype Property",
+  "properties": "Datatype Properties",
+  "edge-connection": "Object Property",
+  "edge-connections": "Object Properties",
+  "query-language": "RDF-SPARQL",
+
+  "nodes-styling": {
+    "title": "Resource Styling"
+  },
+  "edges-styling": {
+    "title": "Predicate Styling"
+  },
+  "keyword-search": {
+    "node-type-placeholder": "Select a class",
+    "node-attribute-placeholder": "Select a predicate"
+  },
+  "connection-detail": {
+    "search-placeholder": "Search for classes",
+    "no-search-title": "No Classes",
+    "no-search-subtitle": "No classes found with searched criteria",
+    "no-elements-title": "No Resources",
+    "no-elements-subtitle": "No resources found to be shown in this list"
+  },
+  "node-expand": {
+    "edge-selection-title": "Predicate Selection",
+    "edge-selection-subtitle": "Select a resource to expand its connections",
+    "no-selection-title": "No Selection",
+    "no-selection-subtitle": "Select a resource to expand its connections",
+    "multi-selection-title": "Multiple Selection",
+    "multi-selection-subtitle": "Select a single resource to expand its connections",
+    "no-connections-title": "Unconnected Resource",
+    "no-connections-subtitle": "This resource has no connection. Therefore, it is not expandable",
+    "no-unfetched-title": "Nothing to Expand",
+    "no-unfetched-subtitle": "This resource has been completely expanded",
+    "neighbors-of-type": "Expand neighbors of class"
+  },
+  "entities-tabular": {
+    "all-nodes": "All Resources",
+    "all-edges": "All Predicates",
+    "nodes-placeholder": "Add resources in the Graph View to see their information",
+    "edges-placeholder": "Add resources in the Graph View to see their predicates"
+  }
+}

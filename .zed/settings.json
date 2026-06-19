@@ -1,0 +1,20 @@
+{
+  "format_on_save": "on",
+  "prettier": { "allowed": false },
+  "formatter": [
+    {
+      "external": {
+        "command": "pnpm",
+        "arguments": ["exec", "oxfmt", "--stdin-filepath", "{buffer_path}"]
+      }
+    }
+  ],
+  "lsp": {
+    "tailwindcss-language-server": {
+      "settings": {
+        "rootFontSize": 14,
+        "classFunctions": ["cva", "cn"]
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "vitest.workspaceConfig": "vitest.workspace.ts",
+  "editor.quickSuggestions": {
+    "strings": "on"
+  },
+  "tailwindCSS.rootFontSize": 14,
+  "tailwindCSS.classFunctions": ["cva", "cn"]
+}

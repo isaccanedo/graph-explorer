@@ -1,0 +1,35 @@
+import {
+  Button,
+  LabelledSetting,
+  PageHeading,
+  SendIcon,
+  SettingsSection,
+  SettingsSectionContainer,
+} from "@/components";
+import { env } from "@/utils";
+import { LABELS } from "@/utils/constants";
+
+export default function SettingsAbout() {
+  return (
+    <SettingsSectionContainer>
+      <PageHeading>{LABELS.APP_NAME}</PageHeading>
+      <SettingsSection>
+        <LabelledSetting
+          label="App version"
+          description={__GRAPH_EXP_VERSION__}
+        />
+        <LabelledSetting
+          label="Provide Feedback"
+          description={`If you have any ideas for future features for ${LABELS.APP_NAME}, or encounter an issue, please let us know.`}
+        >
+          <Button asChild>
+            <a href={env.GRAPH_EXP_FEEDBACK_URL}>
+              <SendIcon />
+              Send
+            </a>
+          </Button>
+        </LabelledSetting>
+      </SettingsSection>
+    </SettingsSectionContainer>
+  );
+}

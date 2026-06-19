@@ -1,0 +1,19 @@
+**/node_modules/
+**/coverage/
+**/.DS_Store
+**/.vs/
+**/.idea/
+**/dist/
+**/.env.local
+
+# IntelliJ IDEA module files
+*.iml
+
+# TypeScript build cache manifests
+*.tsbuildinfo
+
+# Local planning docs
+plans/
+
+# Claude Code local files
+.claude

@@ -1,0 +1,60 @@
+{
+  "name": "graph-explorer",
+  "version": "3.1.0",
+  "private": true,
+  "description": "Graph Explorer",
+  "license": "Apache-2.0",
+  "author": "amazon",
+  "type": "module",
+  "scripts": {
+    "prepare": "husky",
+    "lint": "oxlint --fix",
+    "check:lint": "oxlint",
+    "format": "oxfmt",
+    "check:format": "oxfmt --check",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage",
+    "check:types": "pnpm -r --include-workspace-root --parallel --stream run typecheck",
+    "typecheck": "tsc --noEmit",
+    "checks": "pnpm run check:lint && pnpm run check:format && pnpm run check:types",
+    "start": "pnpm --filter \"graph-explorer-proxy-server\" run start",
+    "clean": "pnpm --stream -r run clean",
+    "clean:dep": "rm -rf node_modules && pnpm -r exec rm -rf node_modules",
+    "build": "pnpm --stream -r run build",
+    "dev": "pnpm --stream -r run dev"
+  },
+  "devDependencies": {
+    "@tanstack/eslint-plugin-query": "5.101.0",
+    "@types/node": "^24.13.1",
+    "@vitest/coverage-v8": "4.1.9",
+    "babel-plugin-react-compiler": "^1.0.0",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.7",
+    "oxfmt": "^0.55.0",
+    "oxlint": "1.62.0",
+    "oxlint-tsgolint": "0.23.0",
+    "typescript": "^6.0.3",
+    "vitest": "4.1.9"
+  },
+  "lint-staged": {
+    "!(**/*.{js,ts,tsx})": "oxfmt --no-error-on-unmatched-pattern",
+    "**/*.{js,ts,tsx}": [
+      "oxlint --fix",
+      "oxfmt"
+    ]
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": ">=24.16.0",
+      "onFail": "error"
+    }
+  },
+  "engines": {
+    "node": ">=24.16.0",
+    "pnpm": ">=11.5.2"
+  },
+  "packageManager": "pnpm@11.5.2+sha512.71c631e382066efc25625d5cf029075de07b61b37f6e27350fbd84b1bda5864c8c1967adc280776b45c30a715c0359a3be08fef42d5bb09e2b99029979692916"
+}

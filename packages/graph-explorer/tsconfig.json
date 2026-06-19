@@ -1,0 +1,29 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "include": ["src", "vite.config.ts"],
+  "compilerOptions": {
+    /* Modules */
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "allowImportingTsExtensions": true,
+
+    /* JSX */
+    "jsx": "react-jsx",
+
+    /* Type Resolution */
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "types": [
+      "vite/client",
+      "vitest/globals",
+      "@testing-library/jest-dom",
+      "@types/wicg-file-system-access"
+    ],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/types/*": ["./src/@types/*"],
+      "@shared/*": ["../shared/src/*"]
+    }
+  }
+}
