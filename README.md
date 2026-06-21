@@ -36,7 +36,7 @@ Understand your data model at a glance. See node types, their relationships, and
 
 See the [full documentation](./docs) for features, guides, references, and more.
 
-## Community
+# Community
 
 - [Roadmap](./ROADMAP.md) — See what's planned
 - [Changelog](./Changelog.md) — Recent releases
