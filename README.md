@@ -26,7 +26,7 @@ Understand your data model at a glance. See node types, their relationships, and
 
 ![Schema Explorer showing the relationships between airport, country, continent, and version node types](./images/schema-explorer.png)
 
-## Get Started
+# Get Started
 
 - [Hands-on tutorial](./docs/getting-started/README.md) — Try Graph Explorer with sample data using Docker Compose
 - [Deployment & connection guides](./docs/guides) — Run with Docker, EC2, ECS Fargate, or SageMaker and connect to your database
