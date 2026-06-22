@@ -4,7 +4,7 @@ Graph Explorer is a React-based web application that makes it easy to visualize 
 
 Connect to graph databases that support [Apache TinkerPop Gremlin](https://tinkerpop.apache.org/) or [W3C RDF/SPARQL](https://www.w3.org/TR/sparql11-overview/) over HTTP, or [openCypher](https://opencypher.org) via [Amazon Neptune](https://aws.amazon.com/neptune/).
 
-## Explore Your Data
+# Explore Your Data
 
 Graph Explorer provides three integrated views for working with your graph database, all in one app.
 
