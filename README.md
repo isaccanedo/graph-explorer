@@ -43,7 +43,7 @@ See the [full documentation](./docs) for features, guides, references, and more.
 - [Discussions](https://github.com/aws/graph-explorer/discussions) — Ask questions and share ideas
 - [Submit an Issue](https://github.com/aws/graph-explorer/issues/new/choose) — Report bugs or request features
 
-## Contributing
+# Contributing
 
 See [CONTRIBUTING](./CONTRIBUTING.md) for more information.
 
