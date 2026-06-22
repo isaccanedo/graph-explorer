@@ -1,4 +1,4 @@
-# Graph Explorer
+## Graph Explorer
 
 Graph Explorer is a React-based web application that makes it easy to visualize and explore graph data, no query language knowledge required. Search for nodes, expand connections, and discover relationships across your graph database through an intuitive visual interface.
 
