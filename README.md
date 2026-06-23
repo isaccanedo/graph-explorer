@@ -32,7 +32,7 @@ Understand your data model at a glance. See node types, their relationships, and
 - [Deployment & connection guides](./docs/guides) — Run with Docker, EC2, ECS Fargate, or SageMaker and connect to your database
 - [Development](./docs/development.md) — Build from source for local development
 
-## Documentation
+# Documentation
 
 See the [full documentation](./docs) for features, guides, references, and more.
 
