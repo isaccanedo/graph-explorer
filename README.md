@@ -47,6 +47,6 @@ See the [full documentation](./docs) for features, guides, references, and more.
 
 See [CONTRIBUTING](./CONTRIBUTING.md) for more information.
 
-## License
+# License
 
 This project is licensed under the Apache-2.0 License.
